@@ -1,6 +1,6 @@
 # MEMORY.md
 
-- Windows startup for OpenClaw should use a resilient two-step flow: first `openclaw gateway run` in a separate PowerShell window, then wait for Gateway readiness on `127.0.0.1:18789` (up to 600 seconds) before opening a new PowerShell window for `openclaw dashboard`.
+- Windows startup for OpenClaw should use a resilient log-driven flow: first `openclaw gateway run` in a separate PowerShell window, then use a separate monitor window to watch the gateway log for `[gateway] ready` and `[heartbeat] started` (up to 600 seconds) before opening a new PowerShell window for `openclaw dashboard`.
 - After the dashboard opens, also open GitHub Copilot usage page at `https://github.com/settings/copilot/features`.
 - Removed the old Evernote/印象笔记 startup shortcut from the Windows Startup folder.
 - The startup launcher currently lives at `C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\OpenClaw Startup.cmd`.\n- A synchronized repo copy of the startup launcher lives at `startup\OpenClaw Startup.cmd`.
