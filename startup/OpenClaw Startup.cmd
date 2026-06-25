@@ -1,7 +1,6 @@
 @echo off
 setlocal
-rem OpenClaw startup launcher
 for /f %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmssfff"') do set "STAMP=%%I"
 set "LOG=%TEMP%\openclaw-gateway-startup-%STAMP%.log"
-start "OpenClaw Gateway" powershell -NoProfile -NoExit -ExecutionPolicy Bypass -Command "openclaw gateway run 2>&1 | Tee-Object -FilePath '%LOG%'; Write-Host ''; Write-Host '[startup] gateway process exited'; Pause"
-start "OpenClaw Gateway Monitor" cmd /c ""%~dp0OpenClaw-Gateway-Monitor.cmd" "%LOG%""
+start "OpenClaw Gateway" powershell.exe -NoProfile -NoExit -ExecutionPolicy Bypass -Command "openclaw gateway run 2>&1 | Tee-Object -FilePath '%LOG%'; Write-Host ''; Write-Host '[startup] gateway process exited'; Pause"
+start "OpenClaw Gateway Monitor" powershell.exe -NoProfile -NoExit -ExecutionPolicy Bypass -Command "$log = '%LOG%'; $deadline = (Get-Date).AddSeconds(600); $ready = $false; while((Get-Date) -lt $deadline){ if(Test-Path $log){ $text = Get-Content -Path $log -Raw -ErrorAction SilentlyContinue; if($text -match '\[gateway\]\s+ready' -and $text -match '\[heartbeat\]\s+started'){ $ready = $true; break } } Start-Sleep -Seconds 5 }; if(-not $ready){ Write-Host '[startup] gateway not ready after 600 seconds'; exit 1 }; Start-Process powershell.exe -ArgumentList '-NoProfile','-NoExit','-ExecutionPolicy','Bypass','-Command',\"$Host.UI.RawUI.WindowTitle='OpenClaw Gateway Log Tail'; Write-Host ''; Write-Host '[startup] live log follow begins'; Write-Host '[startup] press Ctrl+C to stop following the log'; Get-Content -Path '$log' -Tail 20 -Wait\"; Start-Sleep -Seconds 2; Start-Process powershell.exe -ArgumentList '-NoProfile','-NoExit','-ExecutionPolicy','Bypass','-Command','openclaw dashboard'; Start-Sleep -Seconds 3; Start-Process 'https://github.com/settings/copilot/features'; Write-Host ''; Write-Host '[startup] tail window launched'"
