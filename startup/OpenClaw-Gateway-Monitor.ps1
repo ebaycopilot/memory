@@ -3,6 +3,8 @@ param(
   [string]$LogPath
 )
 
+$Host.UI.RawUI.WindowTitle = 'OpenClaw Gateway Monitor'
+
 $deadline = (Get-Date).AddSeconds(600)
 $ready = $false
 
@@ -22,11 +24,13 @@ if (-not $ready) {
   exit 1
 }
 
+$tailCommand = "& { Set-Location '$PSScriptRoot'; `$Host.UI.RawUI.WindowTitle = 'OpenClaw Gateway Log Tail'; Write-Host ''; Write-Host '[startup] live log follow begins'; Write-Host '[startup] press Ctrl+C to stop following the log'; Get-Content -Path '$LogPath' -Tail 20 -Wait }"
+
+Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-Command',$tailCommand
+Start-Sleep -Seconds 2
 Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-Command','openclaw dashboard'
 Start-Sleep -Seconds 3
 Start-Process 'https://github.com/settings/copilot/features'
 
 Write-Host ''
-Write-Host '[startup] live log follow begins'
-Write-Host '[startup] press Ctrl+C to stop following the log'
-Get-Content -Path $LogPath -Tail 20 -Wait
+Write-Host '[startup] tail window launched'
