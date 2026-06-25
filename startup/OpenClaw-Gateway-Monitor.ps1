@@ -24,7 +24,7 @@ if (-not $ready) {
   exit 1
 }
 
-Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-File',"$PSScriptRoot\OpenClaw-Gateway-Tail.ps1",'-LogPath',$LogPath
+Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-File',(Join-Path $PSScriptRoot 'OpenClaw-Gateway-Tail.ps1'),'-LogPath',$LogPath
 Start-Sleep -Seconds 2
 Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-Command','openclaw dashboard'
 Start-Sleep -Seconds 3
