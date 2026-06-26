@@ -111,6 +111,25 @@
 - 测试图片保存目录：`D:\github\social\memory\tiktok\generated\接口测试\manual-20260626174319960`。
 - 真实测试评论：`看来这接口调整还挺有讲究呢！从图上看有了阶段性成果，后续继续调整。很好奇调整完成后会有啥新功能，期待博主分享后续进展哈！`
 
+### 2026-06-26：手动截图评论默认风格改为同事朋友圈
+
+用户明确：自己的评论都要通过 `social` 的评论功能运行出来；需要调整的也是 `social` 的评论功能。用户身份是中年男性，评论对象常是同事朋友圈，评论需要含蓄、内敛、有深度。
+
+已实现：
+
+- `from-images.js` 的默认评论场景从泛化口语评论改为：微信朋友圈、中年男性、同事关系、含蓄内敛、有分寸、有深度。
+- 新增可覆盖参数：`--platform`、`--relationship`、`--persona`、`--style`、`--tone`、`--length`。
+- `comments.js` 的 `buildContentPrompts()` 增加朋友圈分支；当 `platform` 为 `朋友圈/微信朋友圈` 时，生成适合同事朋友圈的克制评论，不再使用抖音热评口吻。
+- 增加限制：不要主动称呼对方姓名或昵称，避免生成过于熟络/突兀的开头。
+- 原有抓视频生成 `image-to-text.json` 的抖音评论/弹幕流程保留，不改硬编码请求。
+- social 仓库提交并推送：`a825f1b Tune manual comments for colleague moments` 到 `develop`。
+
+验证：
+
+- 非 `node_modules` 下 JS 语法检查：`syntax_failed=0`。
+- 默认参数解析验证通过：`platform=朋友圈`、`relationship=同事`、`persona=中年男性`。
+- 真实调用同事旅行朋友圈图生成评论，最终输出：`景美人稀，别有逸趣。喜来登的惬意与周遭山水相融，似在喧嚣中辟出一方静土。这趟旅程，想必为身心寻得片刻安栖。`
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
