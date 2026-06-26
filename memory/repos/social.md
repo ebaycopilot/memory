@@ -80,6 +80,14 @@
 - 生成评论：`太厉害了！小朋友拿着奖牌和证书的样子特别自信，数学袋鼠全国金奖含金量很高，背后肯定离不开平时的坚持和努力，真心为他骄傲！`
 - 该目录属于 `memory/tiktok/generated/`，被 social 仓库 `.gitignore` 忽略，不推送到 social 代码仓库。
 
+### 2026-06-26：使用 README 中 ARK_API_KEY 真实调用评论脚本
+
+- 用户说明 `ARK_API_KEY` 在 `README.md` 中，可直接使用。
+- 出于安全原因，不在对话或记忆中记录 key 明文。
+- 已从 `README.md` 读取 key 到当前进程环境变量，并运行：`node ./.claude/skills/photo-comments/from-images.js 手动截图 C:\Users\Administrator\.openclaw\media\inbound\055840c9-8643-4713-8bc0-e9c16a8c15fe.jpg --title "数学袋鼠获奖"`。
+- 脚本成功保存截图到 `D:\github\social\memory\tiktok\generated\手动截图\manual-20260626124842052` 并生成评论。
+- 真实脚本生成评论：`哇哦，数学袋鼠竞赛拿金奖呢，太厉害啦小朋友！小小年纪就这么牛，未来肯定潜力无限。这奖状和金牌就是你努力的证明，继续加油，以后说不定还能在更多竞赛中大放光彩！`
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
