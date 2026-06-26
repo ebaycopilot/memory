@@ -130,6 +130,24 @@
 - 默认参数解析验证通过：`platform=朋友圈`、`relationship=同事`、`persona=中年男性`。
 - 真实调用同事旅行朋友圈图生成评论，最终输出：`景美人稀，别有逸趣。喜来登的惬意与周遭山水相融，似在喧嚣中辟出一方静土。这趟旅程，想必为身心寻得片刻安栖。`
 
+### 2026-06-26：同事朋友圈评论风格调轻为生活化
+
+用户反馈：不需要这么有深度，要适当生活化一点。
+
+已实现：
+
+- `from-images.js` 默认 `style` 从 `含蓄内敛、有分寸、有深度` 改为 `自然生活化、有分寸、不夸张`。
+- 默认 `tone` 从 `稳重、克制、有余味` 改为 `稳重但轻松，像日常同事评论`。
+- `comments.js` 的朋友圈 prompt 增加约束：像真实生活里同事之间的自然评论，不要太有文采，不要故作深刻，不要上价值，不要过度抒情。
+- 更新 `.claude/skills/photo-comments/SKILL.md` 默认风格说明。
+- social 仓库提交并推送：`1e54890 Make colleague moment comments more natural` 到 `develop`。
+
+验证：
+
+- 非 `node_modules` 下 JS 语法检查：`syntax_failed=0`。
+- prompt 默认参数检查通过。
+- 使用同事旅行朋友圈图真实调用，输出更生活化：`这地儿看着真不错，景美，住得也舒坦。下次有类似好去处，可得多分享分享！`
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
