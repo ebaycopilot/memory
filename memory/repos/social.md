@@ -72,6 +72,14 @@
 - `from-images.js --help` 可输出用法。
 - `parseArgs` 最小解析验证通过。
 
+### 2026-06-26：手动截图入口首次实际图片测试
+
+- 用户在微信直接发送了一张图片，作为新增“手动截图直接评论”入口的实际测试输入。
+- 图片已保存到 `D:\github\social\memory\tiktok\generated\手动截图\manual-20260626124533487\01.jpg`。
+- 因当前环境未设置 `ARK_API_KEY`，仓库脚本不能实际调用豆包视觉模型；本次使用 OpenClaw 当前可见图片能力 fallback 生成评论，并写入同目录 `index.json`。
+- 生成评论：`太厉害了！小朋友拿着奖牌和证书的样子特别自信，数学袋鼠全国金奖含金量很高，背后肯定离不开平时的坚持和努力，真心为他骄傲！`
+- 该目录属于 `memory/tiktok/generated/`，被 social 仓库 `.gitignore` 忽略，不推送到 social 代码仓库。
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
