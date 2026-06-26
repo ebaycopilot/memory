@@ -148,6 +148,25 @@
 - prompt 默认参数检查通过。
 - 使用同事旅行朋友圈图真实调用，输出更生活化：`这地儿看着真不错，景美，住得也舒坦。下次有类似好去处，可得多分享分享！`
 
+### 2026-06-26：避免同事朋友圈评论出现北京口吻
+
+用户反馈：用词不要这么像北京人说话。
+
+已实现：
+
+- `from-images.js` 默认 `style` 补充：使用中性普通话表达。
+- 默认 `tone` 补充：不带地域口音。
+- `comments.js` 的朋友圈 prompt 明确避免北京口语、儿化音和地域口吻。
+- 显式禁止/规避词例：`地儿`、`可得`、`倍儿`、`甭`、`咱`、`得去`、`转转`，同时避免波浪号。
+- 更新 `.claude/skills/photo-comments/SKILL.md` 默认风格说明。
+- social 仓库提交并推送：`631b2ac Avoid regional phrasing in moment comments` 到 `develop`。
+
+验证：
+
+- 非 `node_modules` 下 JS 语法检查：`syntax_failed=0`。
+- prompt 默认参数检查通过。
+- 使用同事旅行朋友圈图真实调用，输出更中性：`风景真美，这喜来登看着确实不错。玩得挺惬意啊，有机会我也去体验体验。`
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
