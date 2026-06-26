@@ -50,6 +50,28 @@
 - 多处硬编码 CDP 地址：`http://localhost:9222`。
 - `connectOverCDP` 后使用 `browser.close()` 可能误关用户的远程调试浏览器；更安全的是 CDP 连接默认 `disconnect()`，自己启动的浏览器才 `close()`。
 
+## 改造记录
+
+### 2026-06-26：评论部分新增“手动截图直接评论”入口
+
+用户要求：只改第三部分“评论”，新增功能为用户提供截图后，先把截图保存到某个文件夹，再调用评论脚本直接根据这些截图生成评论；不得影响原有“抓视频 → 截图 → 评论”流程。
+
+已实现：
+
+- 新增 `.claude/skills/photo-comments/from-images.js`。
+- 用法：`node ./.claude/skills/photo-comments/from-images.js <名称> <截图路径...> [--title <标题>] [--force|-f]`。
+- 脚本会把手动截图复制到 `memory/tiktok/generated/<名称>/manual-<timestamp>/`，再直接生成 `comment` 并写入该目录的 `index.json`。
+- `comments.js` 导出 `generateContentFromFolder`，让新增入口复用评论部分原有 prompt。
+- `image-to-text` 从仅支持 PNG 扩展为支持 `png/jpg/jpeg/webp`，原 PNG 流程不受影响。
+- 更新 `.claude/skills/photo-comments/SKILL.md` 说明原流程与新增手动截图入口。
+- social 仓库提交并推送：`de52ce4 Add manual screenshot comment entry` 到 `develop`。
+
+验证：
+
+- `node --check` 检查非 `node_modules` 下 JS：`syntax_failed=0`。
+- `from-images.js --help` 可输出用法。
+- `parseArgs` 最小解析验证通过。
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
