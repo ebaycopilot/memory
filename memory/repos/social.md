@@ -88,6 +88,29 @@
 - 脚本成功保存截图到 `D:\github\social\memory\tiktok\generated\手动截图\manual-20260626124842052` 并生成评论。
 - 真实脚本生成评论：`哇哦，数学袋鼠竞赛拿金奖呢，太厉害啦小朋友！小小年纪就这么牛，未来肯定潜力无限。这奖状和金牌就是你努力的证明，继续加油，以后说不定还能在更多竞赛中大放光彩！`
 
+### 2026-06-26：调整豆包 AI 从图片获取评论的接口
+
+用户通过图片说明：功能已可用，接下来要调整“调用豆包 AI 从图片获取评论”的接口。
+
+已实现：
+
+- 新增 `.claude/skills/image-to-text/doubao-vision.js`，将豆包视觉调用从 `image-to-text/index.js` 中抽成独立接口。
+- 新接口：`generateTextFromImagePaths(imagePaths, prompts, options)`，可直接传图片路径数组给豆包视觉模型生成文本。
+- 兼容接口：`generateTextFromImageFolder(folderPath, startIndex, endIndex, prompts, options)`，保留原有文件夹流程。
+- `comments.js` 新增/导出 `generateContentFromImagePaths(type, imagePaths, opts)`，评论层可直接基于图片路径数组生成评论。
+- `from-images.js` 改为通过 `generateContentFromImagePaths()` 调用评论接口，而不是再绕回文件夹读取。
+- `ARK_API_KEY` 读取逻辑：优先使用环境变量；如果没有设置，则从仓库根目录 `README.md` 读取，不在日志或记忆里记录 key 明文。
+- 更新 `.claude/skills/photo-comments/SKILL.md` 说明新接口。
+- social 仓库提交并推送：`c38fa33 Refactor Doubao image comment interface` 到 `develop`。
+
+验证：
+
+- 非 `node_modules` 下 JS 语法检查：`syntax_failed=0`。
+- 接口导出检查通过：`generateTextFromImagePaths`、`generateTextFromImageFolder`、`generateContentFromImagePaths` 都可用。
+- 清除当前进程 `ARK_API_KEY` 后，运行 `from-images.js`，成功从 README 兜底读取 key 并真实调用豆包生成评论。
+- 测试图片保存目录：`D:\github\social\memory\tiktok\generated\接口测试\manual-20260626174319960`。
+- 真实测试评论：`看来这接口调整还挺有讲究呢！从图上看有了阶段性成果，后续继续调整。很好奇调整完成后会有啥新功能，期待博主分享后续进展哈！`
+
 ## 验证记录
 
 - 在 `D:\github\social` 执行过非 `node_modules` 的 JS 语法检查：`checked=10 failed=0`。
