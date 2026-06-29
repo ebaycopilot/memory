@@ -6,8 +6,9 @@
 
 - 本地路径：`D:\github\social`
 - GitHub remote：`https://github.com/hypothesisobservation/social`
-- 当前代码开发分支：`develop`。
-- 早先曾新建过 `development` 分支；后续按用户要求统一使用 `develop`。
+- 当前历史流水线开发分支：`develop`。
+- 当前社交评论智能体开发/使用分支：`agent`。
+- 早先曾新建过 `development` 分支；后续按用户要求统一使用 `develop`；评论智能体相关改动统一使用 `agent`。
 - 用户最初称它为“搜索这个 repo”，后确认实际是 `social`。
 
 ## 当前理解
@@ -230,3 +231,25 @@ P2：
 - 和 `social` 相关的任何改动都要立即提交并推送。
 - 代码改动：在 `D:\github\social` 的 `develop` 分支完成、提交并推送。
 - 记忆改动：同步到 `D:\github\memory` 的 `main` 分支，提交并推送。
+
+
+### 2026-06-29：社交评论智能体与 OpenClaw 记忆同步
+
+用户要求把 OpenClaw 中与 `social` 仓库相关的记忆同步到 `D:\github\memory` 仓库。已同步的长期规则如下：
+
+- OpenClaw 中以 `social` / `社交` 开头的请求，应进入 `D:\github\social` 仓库上下文。
+- `社交评论` / `搜索评论开始` / `社交评论任务开始` 表示进入朋友圈素材收集窗口；用户会陆续发送朋友圈总览截图和缩略图对应的真实全图。不要基于触发语或第一张图提前评论。
+- 收集完成后，评论必须基于整组素材：朋友圈总览截图、全图、可见文字、发布人、时间和整体语境。
+- 社交评论必须通过 `photo-comments` 评论 skill 生成，不得由社交评论智能体绕过 skill 直接调用大模型、视觉模型、OpenAI/Ark/Doubao API 或 image-to-text 底层 helper。
+- OpenClaw / PowerShell 的职责边界：只负责放图/调用/显示最终 `comment` 字段；社交评论智能体负责读记忆、准备任务目录、调用评论 skill、写 `index.json`，并返回其中 `comment` 字段。
+- `bigming` 是用户家人；评论她的朋友圈时按亲人/家人视角处理，语气可以更放松、更亲近，但仍要自然、有分寸，不肉麻、不夸张。
+- 朋友圈素材处理顺序：先读总览截图文字判断主题，再看全图里的具体、生动、有记忆点的细节；避免泛泛夸“舒服、自然、不错”。
+- 记忆维护原则：`social-commenter` 记忆只保存可复用规则、关系事实、风格约束、反例和少量模式例子；不要把每次任务路径、原始评论、API 报错或单次朋友圈流水追加进去。
+- 修改 `social` 仓库的 agent memory、`social-commenter` prompt 或评论 skill 后，自动在 `agent` 分支 commit 并尝试 `git push origin agent`；push 失败时要明确说明“本地已提交，远端未同步”。
+- 修改 `D:\github\memory` 仓库记忆后，在 `main` 分支 commit 并尝试推送。
+
+截至本次同步，`D:\github\social` 的 `agent` 分支远端已包含：
+
+- `7e2b823 Make social commenter folder driven`：PowerShell/本地用法改成文件夹驱动；终端显示评论，原始 JSON 写入 `memory/tiktok/generated/<任务名>/manual-<时间戳>/index.json`。
+- `f8d7783 Document social repo sync workflow`：记录修改 social 记忆/skill 后自动 commit + push 的工作流。
+- `7a556ab Consolidate social commenter memory`：将社交评论智能体记忆从 field notes 瘦身为规则、反例、模式。

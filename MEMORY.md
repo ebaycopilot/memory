@@ -10,6 +10,8 @@
   - Once the startup task is marked complete, do not modify this memory again unless the user explicitly says to reopen or change the startup setup.
 
 - `D:\github\social` has a dedicated project memory at `memory\repos\social.md`.
-  - Trigger phrases: `social 仓库`, `搜索 repo`, `抖音截图评论工具`, `这个仓库` when the active repo is social.
+  - Trigger phrases: `social`, `社交`, `社交评论`, `搜索评论开始`, `social 仓库`, `抖音截图评论工具`, or `这个仓库` when the active repo is social.
   - Before optimizing that repo, read the dedicated project memory first and append significant decisions/results there.
-  - For any social-related work, immediately commit and push changes: code in `D:\github\social` on `develop`, memory in `D:\github\memory` on `main`.
+  - Social comment workflow: wait for the full Moments material batch, route generation through the comment skill, and display the generated JSON `comment` field.
+  - Branch convention: general historical pipeline work used `develop`; the standalone social-commenter agent and current comment workflow live on `agent`.
+  - For social-related work, immediately commit and push changes: code/agent changes in `D:\github\social` on the active target branch, and memory changes in `D:\github\memory` on `main`.
