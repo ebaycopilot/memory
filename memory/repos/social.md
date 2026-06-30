@@ -7,8 +7,8 @@
 - 本地路径：`D:\github\social`
 - GitHub remote：`https://github.com/hypothesisobservation/social`
 - 当前历史流水线开发分支：`develop`。
-- 当前社交评论智能体开发/使用分支：`agent`。
-- 早先曾新建过 `development` 分支；后续按用户要求统一使用 `develop`；评论智能体相关改动统一使用 `agent`。
+- 当前社交评论智能体开发/使用分支：`qlagent-1`（2026-06-30 独立 qlagent 改造）。
+- 早先曾新建过 `development` 分支；后续按用户要求统一使用 `develop`；早期评论智能体相关改动使用 `agent`，2026-06-30 独立 qlagent 改造使用 `qlagent-1`。
 - 用户最初称它为“搜索这个 repo”，后确认实际是 `social`。
 
 ## 当前理解
@@ -229,7 +229,7 @@ P2：
 - 开始任何优化前，先查看本文件，避免重复分析。
 - 重要决策、修复结果、踩坑和下一步计划都追加到本文件。
 - 和 `social` 相关的任何改动都要立即提交并推送。
-- 代码改动：在 `D:\github\social` 的 `develop` 分支完成、提交并推送。
+- 代码改动：在 `D:\github\social` 的用户指定/当前目标分支完成、提交并推送；历史流水线通常用 `develop`，评论智能体当前改造用 `qlagent-1`。
 - 记忆改动：同步到 `D:\github\memory` 的 `main` 分支，提交并推送。
 
 
@@ -245,7 +245,7 @@ P2：
 - `bigming` 是用户家人；评论她的朋友圈时按亲人/家人视角处理，语气可以更放松、更亲近，但仍要自然、有分寸，不肉麻、不夸张。
 - 朋友圈素材处理顺序：先读总览截图文字判断主题，再看全图里的具体、生动、有记忆点的细节；避免泛泛夸“舒服、自然、不错”。
 - 记忆维护原则：`social-commenter` 记忆只保存可复用规则、关系事实、风格约束、反例和少量模式例子；不要把每次任务路径、原始评论、API 报错或单次朋友圈流水追加进去。
-- 修改 `social` 仓库的 agent memory、`social-commenter` prompt 或评论 skill 后，自动在 `agent` 分支 commit 并尝试 `git push origin agent`；push 失败时要明确说明“本地已提交，远端未同步”。
+- 修改 `social` 仓库的 agent memory、`social-commenter` prompt 或评论 skill 后，自动在用户指定/当前目标分支 commit 并尝试 push；未指定时沿用对应工作流分支。push 失败时要明确说明“本地已提交，远端未同步”。
 - 修改 `D:\github\memory` 仓库记忆后，在 `main` 分支 commit 并尝试推送。
 
 截至本次同步，`D:\github\social` 的 `agent` 分支远端已包含：
@@ -253,3 +253,25 @@ P2：
 - `7e2b823 Make social commenter folder driven`：PowerShell/本地用法改成文件夹驱动；终端显示评论，原始 JSON 写入 `memory/tiktok/generated/<任务名>/manual-<时间戳>/index.json`。
 - `f8d7783 Document social repo sync workflow`：记录修改 social 记忆/skill 后自动 commit + push 的工作流。
 - `7a556ab Consolidate social commenter memory`：将社交评论智能体记忆从 field notes 瘦身为规则、反例、模式。
+
+### 2026-06-30：`qlagent-1` 独立社交评论智能体改造与验证
+
+用户要求新建 `qlagent-1` 分支，把社交评论智能体做成更独立的智能体：宿主（OpenClaw、PowerShell、VS Code 等）只负责传入图片/参数并展示结果；智能体自己读取 prompt、memory，必要时调用配置的大模型做规划，再委托评论 skill 生成最终评论。
+
+已完成并提交到 `D:\github\social` 的 `qlagent-1` 分支：
+
+- 提交：`69411ba Refactor social commenter as standalone agent`。
+- 新增 `scripts/lib/social-commenter-llm.js`：OpenAI-compatible 文本规划模型客户端，默认目标 provider=`copilot`，model=`gpt-4.5-mini`。
+- `scripts/social-commenter-agent.js` 改为独立入口：读取 `.claude/agents/social-commenter.md` 和 `.claude/agents/social-commenter/MEMORY.md`，支持 `--llm auto|required|off`、`--llm-provider`、`--llm-model`、`--json`。
+- `scripts/social-commenter.ps1` 增加 `-Llm auto|required|off`、`-LlmProvider`、`-LlmModel`、`-Json`，并修正 Windows PowerShell 中文输出编码。
+- 生成边界更新：文本大模型只做规划、语气判断、输入输出整理；图片落地的最终朋友圈评论仍必须通过 `.claude/skills/photo-comments` / `generateContentFromImagePaths('comment', ...)`，不得绕过评论 skill 直接把图片交给其它视觉模型生成最终评论。
+- README、`social-commenter.md`、`social-commenter/MEMORY.md` 已同步说明默认规划模型、输入输出契约和 generation boundary。
+
+验证记录：
+
+- `node scripts/social-commenter-agent.js --self-test` 通过。
+- `node --check scripts/social-commenter-agent.js` 与 `node --check scripts/lib/social-commenter-llm.js` 通过。
+- PowerShell dry-run + JSON 输出验证通过；确认 `bigming` 自动按 `家人` 处理，中文参数不乱码。
+- 用 20x20 空白图跑通完整 `photo-comments` skill 链路，空白图返回“请提供相关图片”属于合理结果。
+- 用王亮朋友圈划船/荷塘/合影/狗狗等 7 张真实微信入站图验证完整链路，生成 JSON envelope，`screenshotCount=7`，最终评论由 `photo-comments.generateContentFromImagePaths` 生成；输出候选包含“皮划艇这体验不错，娃卖力，你这划水挺惬意。”等。
+- 生成目录 `memory/tiktok/generated/` 被 social 仓库忽略，不作为代码仓库同步内容。
